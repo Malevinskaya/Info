@@ -1,0 +1,1058 @@
+{
+	"info": {
+		"_postman_id": "308c4a29-97df-4a6f-90cc-0a4a82bd87b7",
+		"name": "Курсовая 2. Добавление личных событий",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28909767"
+	},
+	"item": [
+		{
+			"name": "ЛС в прошлом",
+			"item": [
+				{
+					"name": "1. Создать событие",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    var key = \"eventId\";",
+									"    var value = pm.response.json().data.payload.id;",
+									"    pm.collectionVariables.set(key, value);",
+									"    pm.response.to.have.status(200);    ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var moment = require(\"moment\");",
+									"",
+									"var date_unixtime = (Math.floor(Date.now()/1000) - 86400) * 1000;",
+									"var date_unixtime_till = date_unixtime + (3600 * 1000); ",
+									"",
+									"var date_past_value = moment(date_unixtime).format()",
+									"var date_past_till_value = moment(date_unixtime_till).format()",
+									"",
+									"pm.collectionVariables.set(\"dateInPast\", date_past_value);",
+									"pm.collectionVariables.set(\"dateInPastTill\", date_past_till_value);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{MyToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Malev\", \n    \"startAt\": \"{{dateInPast}}\",\n    \"endAt\": \"{{dateInPastTill}}\",\n    \"color\": \"#FAC641\",\n    \"backgroundColor\": \"#FAC641\",\n    \"description\": \"урок 123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/schedule/createPersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"schedule",
+								"createPersonal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Получить страницу 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);    ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{MyToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{dateInPast}}\",\n    \"till\": \"{{dateInPastTill}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/schedule/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"schedule",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. Редактировать событие",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    var key = \"eventId\";",
+									"    var value = pm.response.json().data.payload.id;",
+									"    pm.collectionVariables.set(key, value);",
+									"",
+									"    var key = \"eventStartAt\";",
+									"    var value = pm.response.json().data.startAt;",
+									"    pm.collectionVariables.set(key, value);",
+									"",
+									"    pm.response.to.have.status(200);    ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{MyToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"backgroundColor\": \"#FFF7C7\",\n    \"color\": \"#FAC641\",\n    \"description\": \"урок\",\n    \"title\": \"Malevinskaya\",\n    \"startAt\": \"{{dateNow}}\",\n    \"endAt\": \"{{dateNowTill}}\",\n    \"id\": {{eventId}},\n    \"oldStartAt\": \"{{dateInPast}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/schedule/updatePersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"schedule",
+								"updatePersonal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Получить страницу 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);    ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{MyToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{dateINnow}}\",\n    \"till\": \"{{dateNowTill}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/schedule/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"schedule",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. Удаление",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);    ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{MyToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": {{eventId}},\n    \"startAt\": \"{{eventStartAt}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/schedule/removePersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"schedule",
+								"removePersonal"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ЛС в настоящем",
+			"item": [
+				{
+					"name": "1. Создать событие",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var moment = require(\"moment\");",
+									"",
+									"var date_unixtime = (Math.floor(Date.now()/1000)) * 1000;",
+									"var date_unixtime_till = date_unixtime + (3600 * 1000); ",
+									"",
+									"var date_past_value = moment(date_unixtime).format()",
+									"var date_past_till_value = moment(date_unixtime_till).format()",
+									"",
+									"pm.collectionVariables.set(\"dateNow\", date_past_value);",
+									"pm.collectionVariables.set(\"dateNowTill\", date_past_till_value);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    var key = \"eventId\";",
+									"    var value = pm.response.json().data.payload.id;",
+									"    pm.collectionVariables.set(key, value);",
+									"    pm.response.to.have.status(200);    ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{MyToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"backgroundColor\": \"#EBFDF2\", \n\"color\": \"#43B658\", \n\"description\": \"\", \n\"title\": \"Малев\",\n\"endAt\": \"{{dateNowTill}}\",\n\"startAt\":\"{{dateNow}}\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/schedule/createPersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"schedule",
+								"createPersonal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Получить страницу 1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);    ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{MyToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"from\": \"{{dateNow}}\",\n\"till\":\"{{dateNowTill}}\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/schedule/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"schedule",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3 Редактировать событие",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    var key = \"eventId\";",
+									"    var value = pm.response.json().data.payload.id;",
+									"    pm.collectionVariables.set(key, value);",
+									"    pm.response.to.have.status(200);    ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{MyToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"backgroundColor\": \"#FAC641\",\n    \"color\": \"#FAC641\",\n    \"description\": \"урок 123\",\n    \"title\": \"Malev\",\n    \"startAt\": \"{{dateInPast}}\",\n    \"endAt\": \"{{dateInPastTill}}\",\n    \"id\": {{eventId}},\n    \"oldStartAt\": \"{{dateNow}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/schedule/updatePersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"schedule",
+								"updatePersonal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Получить страницу2",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var moment = require(\"moment\");",
+									"",
+									"var date_unixtime = (Math.floor(Date.now()/1000)) * 1000;",
+									"var date_unixtime_till = date_unixtime + (3600 * 1000); ",
+									"",
+									"var date_past_value = moment(date_unixtime).format()",
+									"var date_past_till_value = moment(date_unixtime_till).format()",
+									"",
+									"pm.collectionVariables.set(\"dateNow\", date_past_value);",
+									"pm.collectionVariables.set(\"dateNowTill\", date_past_till_value);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);    ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{MyToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"{{dateInPast}}\",\n    \"till\": \"{{dateInPastTill}}\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/schedule/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"schedule",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5 Удалить событие",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);    ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{MyToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": {{eventId}},\n    \"startAt\": \"{{dateInPast}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/schedule/removePersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"schedule",
+								"removePersonal"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ЛС в будущем",
+			"item": [
+				{
+					"name": "1. Создать событие",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var moment = require(\"moment\");",
+									"",
+									"var date_unixtime = (Math.floor(Date.now()/1000)+86400) * 1000;",
+									"var date_unixtime_till = date_unixtime + (3600 * 1000); ",
+									"",
+									"var date_past_value = moment(date_unixtime).format()",
+									"var date_past_till_value = moment(date_unixtime_till).format()",
+									"",
+									"pm.collectionVariables.set(\"dateFuture\", date_past_value);",
+									"pm.collectionVariables.set(\"dateFutureTill\", date_past_till_value);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    var key = \"eventId\";",
+									"    var value = pm.response.json().data.payload.id;",
+									"    pm.collectionVariables.set(key, value);",
+									"    pm.response.to.have.status(200);    ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{MyToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"backgroundColor\": \"#00AEFA\", \n\"color\": \"#43B658\", \n\"durationSeconds\": 1800,\n\"type\": \"class_slot\",\n\"description\": \"Урок_Eng\", \n\"title\": \"Малев\",\n\"endAt\": \"{{dateFutureTill}}\",\n\"startAt\":\"{{dateFuture}}\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/schedule/createPersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"schedule",
+								"createPersonal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.  Получить страницу 1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);    ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{MyToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"from\": \"{{dateFuture}}\",\n\"till\":\"{{dateFutureTill}}\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/schedule/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"schedule",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. Редактировать событие",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    var key = \"eventId\";",
+									"    var value = pm.response.json().data.payload.id;",
+									"    pm.collectionVariables.set(key, value);",
+									"",
+									"    var key = \"eventStartAt\";",
+									"    var value = pm.response.json().data.startAt;",
+									"    pm.collectionVariables.set(key, value);",
+									"",
+									"    pm.response.to.have.status(200);    ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{MyToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"backgroundColor\": \"#FFF7C7\",\n    \"color\": \"#FAC641\",\n    \"description\": \"урок\",\n    \"title\": \"Malevinskaya\",\n    \"type\": \"class_slot\",\n    \"startAt\": \"{{dateNow}}\",\n    \"endAt\": \"{{dateNowTill}}\",\n    \"id\": {{eventId}},\n    \"oldStartAt\": \"{{dateFuture}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/schedule/updatePersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"schedule",
+								"updatePersonal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Получить страницу 2",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);    ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{MyToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"from\": \"{{dateNow}}\",\n\"till\":\"{{dateNowTill}}\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/schedule/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"schedule",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. Удалить событие",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);    ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{MyToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": {{eventId}},\n    \"startAt\": \"{{eventStartAt}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/schedule/removePersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"schedule",
+								"removePersonal"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ЛС без названия (невалидный тест)",
+			"item": [
+				{
+					"name": "1. Создать событие",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var moment = require(\"moment\");",
+									"",
+									"var date_unixtime = (Math.floor(Date.now()/1000)+86400) * 1000;",
+									"var date_unixtime_till = date_unixtime + (3600 * 1000); ",
+									"",
+									"var date_past_value = moment(date_unixtime).format()",
+									"var date_past_till_value = moment(date_unixtime_till).format()",
+									"",
+									"pm.collectionVariables.set(\"dateFuture\", date_past_value);",
+									"pm.collectionVariables.set(\"dateFutureTill\", date_past_till_value);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    var key = \"eventId\";",
+									"    var value = pm.response.json().data.payload.id;",
+									"    pm.collectionVariables.set(key, value);",
+									"    pm.response.to.have.status(200);    ",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token_global={{MyToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"backgroundColor\": \"#00AEFA\", \n\"color\": \"#43B658\", \n\"durationSeconds\": 1800,\n\"type\": \"class_slot\",\n\"description\": \"Урок_Eng\", \n\"title\": \" \",\n\"endAt\": \"{{dateFutureTill}}\",\n\"startAt\":\"{{dateFuture}}\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v2/schedule/createPersonal",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"schedule",
+								"createPersonal"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "eventId",
+			"value": ""
+		},
+		{
+			"key": "eventStartAt",
+			"value": ""
+		},
+		{
+			"key": "dateInPast",
+			"value": ""
+		},
+		{
+			"key": "dateInPastTill",
+			"value": ""
+		},
+		{
+			"key": "dateNow",
+			"value": ""
+		},
+		{
+			"key": "dateINnow",
+			"value": ""
+		},
+		{
+			"key": "dateNowTill",
+			"value": ""
+		},
+		{
+			"key": "filterDateInPast",
+			"value": ""
+		},
+		{
+			"key": "filterDateInPastTill",
+			"value": ""
+		},
+		{
+			"key": "dateFuture",
+			"value": ""
+		},
+		{
+			"key": "dateFutureTill",
+			"value": ""
+		},
+		{
+			"key": "MyToken",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VySWQiOjE0NzIwMDY5LCJpZGVudGl0eSI6InRlc3QudHN0MzIwQHNreWVuZy5ydSIsImlkZW50aXR5TG9naW4iOm51bGwsImlkZW50aXR5RW1haWwiOiJ0ZXN0LnRzdDMyMEBza3llbmcucnUiLCJpZGVudGl0eVBob25lIjoiKzc5ODU0NTg2NTY4IiwibmFtZSI6InRlc3QiLCJzdXJuYW1lIjpudWxsLCJlbWFpbCI6InRlc3QudHN0MzIwQHNreWVuZy5ydSIsInVpTGFuZ3VhZ2UiOiJydSIsImxvY2FsZSI6InJ1Iiwic2VydmljZUxvY2FsZSI6bnVsbCwidWFzIjozMCwiand0VHlwZSI6MSwianRpIjoiRXNueW5EZ1d1QVV2M0xvMllrUXhjcEFORlNsbFJiNnQiLCJicmFuZCI6bnVsbCwiZXhwIjoxNjk0NTIzMjkzLCJhSXNTdHJvbmciOnRydWUsImFUeXBlIjoiVVNFUk5BTUVfUEFTU1dPUkQiLCJhVGltZSI6MTY5NDQzNjg5Miwicm9sZXMiOlsiUk9MRV9URUFDSEVSX0NBTkRJREFURSIsIlJPTEVfVEVBQ0hFUl9DQU5ESURBVEVfQkFTRV9BQ0NFU1MiLCJST0xFX1RUQ19VU0FHRSIsIlJPTEVfVklNQk9YX1RFQUNIRVJfVVNBR0UiLCJST0xFX1RFQUNIRVIiLCJST0xFX0NSTTJfVEVBQ0hFUl9BQ0NFU1MiLCJST0xFX01BVEhfVEVBQ0hFUiIsIlJPTEVfTUFUSF9DT05URU5UX1RIRU1FX1ZJRVciXX0.IL6C-kDUbijpSIfGp7HCSzy3FQNfb-C98NxPi4iFaO7qi4htTpsWkrxbA0RYA2lqj44adCX4x-GbDp--LBYNz5k3G3yTF6Krpr8t98MyoW2hA2Vu51sH3f4VOqj_1tk-zfn4Gazze8WD_wADwa1_rX4w2_WWUWJvyjQTfrlNrUfUNQvixESI3t4tyKtzHKMBx46X2MvZJnbILKKgU6sNks-_0keUOuw_wHQAW3P9cDx7lpaSeVinXYPd9G6H21NXNkY4K78jmrXhGWUw0RkKeHZgQrATMqyIWXHeNlg0c5LLtcTupSQ_vwWhRTQko7-0nO66HoSKNqZJkZhWbnzdPMUNOIxjWTniJgPKC0AzFNDYg3-TlGIi_GPweRhhPR0O1TzYeQ5PgCS4h8wwuJIHcy-fT27OtdlkhgwXQCnSxZBI53NqUp9BjgHxTXCuo4oJwUTDxmCGw8FVZ6R7RzhI5F1U06Jlov0FZIW3KxdKGadPR5taYPA1skFyP_znM6qvGnyRSKVTl99RCMqkFUscHZw2kyW6-Dwzo5p0MwRfUVMRDba8w341m3ex4t3pJrtHFQr2dttqau5x48jnoZ9fnSOBp_KpjnRe-GquTbAllywBI3It9t0436sE8KByZc0RTFPtpD999ldqiTHEWmFO2hDCPePqCy6zxflIonqYERE",
+			"type": "string"
+		},
+		{
+			"key": "baseUrl",
+			"value": "https://api-teachers.skyeng.ru",
+			"type": "string"
+		}
+	]
+}
