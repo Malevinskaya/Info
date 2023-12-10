@@ -74,6 +74,8 @@
 
 <a href="https://docs.google.com/document/d/1oQtJ8ssaiagn2chE5XLAXWKrPuWof7Zk745BRL6-NdE/edit?usp=sharing">Ссылка на проект</a>
 
+<a href="%D0%94%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5%20%D0%BB%D0%B8%D1%87%D0
+%BD%D1%8B%D1%85%20%D1%81%D0%BE%D0%B1%D1%8B%D1%82%D0%B8%D0%B8%CC%86.postman_collection.json">Postman коллекция</a>
 
  <p>Выводы (итоги):<p>
 <ol>
